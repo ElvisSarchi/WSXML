@@ -6,6 +6,7 @@ var url = process.env.WSSRI;
 function parserXMLtoString(xml) {
   //return promise
   try {
+    if(xml)
     return new Promise((resolve, reject) => {
       parseString(xml, function (err, result) {
         if (err) {
