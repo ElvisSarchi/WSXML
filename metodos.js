@@ -6,16 +6,16 @@ var url = process.env.WSSRI;
 function parserXMLtoString(xml) {
   //return promise
   try {
-    if(xml)
-    return new Promise((resolve, reject) => {
-      parseString(xml, function (err, result) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
+    if (xml)
+      return new Promise((resolve, reject) => {
+        parseString(xml, function (err, result) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
       });
-    });
   } catch (err) {
     console.log(err);
   }
@@ -34,39 +34,47 @@ export async function searchXML(claveAccesoComprobante) {
             if (err) {
               reject(err);
             } else {
-              const estado =
-                result.RespuestaAutorizacionComprobante.autorizaciones
-                  .autorizacion.estado;
-              const numeroAutorizacion =
-                result.RespuestaAutorizacionComprobante.autorizaciones
-                  .autorizacion.numeroAutorizacion;
-              const fechaAutorizacion =
-                result.RespuestaAutorizacionComprobante.autorizaciones
-                  .autorizacion.fechaAutorizacion;
-              const ambiente =
-                result.RespuestaAutorizacionComprobante.autorizaciones
-                  .autorizacion.ambiente;
-              const comprobante =
-                result.RespuestaAutorizacionComprobante.autorizaciones
-                  .autorizacion.comprobante;
-              const mensajes =
-                result.RespuestaAutorizacionComprobante.autorizaciones
-                  .autorizacion.mensajes;
-              const comprobanteJson = await parserXMLtoString(comprobante);
-              resolve({
-                estado,
-                numeroAutorizacion,
-                fechaAutorizacion,
-                ambiente,
-                comprobante: comprobanteJson,
-                mensajes,
-              });
+              if (
+                result.RespuestaAutorizacionComprobante.numeroComprobantes !=
+                `0`
+              ) {
+                const estado =
+                  result.RespuestaAutorizacionComprobante?.autorizaciones
+                    ?.autorizacion?.estado;
+                const numeroAutorizacion =
+                  result.RespuestaAutorizacionComprobante?.autorizaciones
+                    ?.autorizacion?.numeroAutorizacion;
+                const fechaAutorizacion =
+                  result.RespuestaAutorizacionComprobante?.autorizaciones
+                    ?.autorizacion?.fechaAutorizacion;
+                const ambiente =
+                  result.RespuestaAutorizacionComprobante?.autorizaciones
+                    ?.autorizacion?.ambiente;
+                const comprobante =
+                  result.RespuestaAutorizacionComprobante.autorizaciones
+                    ?.autorizacion?.comprobante;
+                const mensajes =
+                  result.RespuestaAutorizacionComprobante.autorizaciones
+                    ?.autorizacion?.mensajes;
+                const comprobanteJson = await parserXMLtoString(comprobante);
+                resolve({
+                  estado,
+                  numeroAutorizacion,
+                  fechaAutorizacion,
+                  ambiente,
+                  comprobante: comprobanteJson,
+                  mensajes,
+                });
+              } else {
+                resolve(result);
+              }
             }
           });
         }
       });
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
+    return Promise.reject;
   }
 }

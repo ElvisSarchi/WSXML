@@ -26,13 +26,16 @@ protectRoutes.use((req, res, next) => {
         next();
       }
     });
+  }else{
+    res.status(403)
+    res.send({ success: false, message: "Failed to authenticate token." })
   }
 });
 app.post("/autenticar", (req, res) => {
   const user = req.body.user;
   const password = req.body.password;
   if (user === process.env.USERWS && password === process.env.PASSWORDWS) {
-    const token = jwt.sign({ user }, process.env.SECRET, {
+    const token = jwt.sign({ user: new Date() }, process.env.SECRET, {
       expiresIn: 60 * 60 * 24 * 30,
     });
     res.send({ success: true, token });
@@ -42,7 +45,11 @@ app.post("/autenticar", (req, res) => {
 });
 app.post("/getXML", protectRoutes, async (req, res) => {
   const claveAcceso = req.body.claveAcceso;
-  const result = await searchXML(claveAcceso);
+  const result = await searchXML(claveAcceso).catch((err) => {
+    res.status(503)
+    res.send(err)
+  });
+  
   res.send(result);
 });
 
