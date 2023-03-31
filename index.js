@@ -26,9 +26,9 @@ protectRoutes.use((req, res, next) => {
         next();
       }
     });
-  }else{
-    res.status(403)
-    res.send({ success: false, message: "Failed to authenticate token." })
+  } else {
+    res.status(403);
+    res.send({ success: false, message: "Failed to authenticate token." });
   }
 });
 app.post("/autenticar", (req, res) => {
@@ -45,11 +45,15 @@ app.post("/autenticar", (req, res) => {
 });
 app.post("/getXML", protectRoutes, async (req, res) => {
   const claveAcceso = req.body.claveAcceso;
-  const result = await searchXML(claveAcceso).catch((err) => {
-    res.status(503)
-    res.send(err)
+  const result = await searchXML(claveAcceso).catch(async (err) => {
+    console.error(err);
+    const resp = await searchXML(claveAcceso).catch((err) => {
+      res.status(503);
+      res.send(err);
+    });
+    res.send(resp);
   });
-  
+
   res.send(result);
 });
 
