@@ -2,7 +2,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const { searchXML } = require("./metodos");
+const { searchXML, searchXMLWithoutFormatting } = require("./metodos");
 require("dotenv").config();
 const morgan = require("morgan");
 //use jwt for authentication
@@ -48,6 +48,19 @@ app.post("/getXML", protectRoutes, async (req, res) => {
   const result = await searchXML(claveAcceso).catch(async (err) => {
     console.error(err);
     const resp = await searchXML(claveAcceso).catch((err) => {
+      res.status(503);
+      res.send(err);
+    });
+    res.send(resp);
+  });
+
+  res.send(result);
+});
+app.post("/getXMLWithoutFormatting", protectRoutes, async (req, res) => {
+  const claveAcceso = req.body.claveAcceso;
+  const result = await searchXMLWithoutFormatting(claveAcceso).catch(async (err) => {
+    console.error(err);
+    const resp = await searchXMLWithoutFormatting(claveAcceso).catch((err) => {
       res.status(503);
       res.send(err);
     });
