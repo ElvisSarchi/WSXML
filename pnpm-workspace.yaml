@@ -1,0 +1,7 @@
+packages: []
+# pnpm-workspace.yaml — seguridad (regla Elvis)
+# PnPm SOLO ejecuta scripts de build de dependencias aprobadas en onlyBuiltDependencies (anti-malware).
+onlyBuiltDependencies: []
+ignoredBuiltDependencies:
+  - core-js
+strictDepBuilds: false
